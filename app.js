@@ -54,7 +54,7 @@ async function addPatient(event) {
         telefone: document.getElementById('patientPhone').value
     };
     
-    const response = await fetch(`${apiUrl}/pacientes/add`, {
+    const response = await fetch(`${apiUrl}/pacientes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newPatient)
