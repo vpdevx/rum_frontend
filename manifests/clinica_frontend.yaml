@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clinica-frontend
+  labels:
+    app: clinica-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clinica-frontend
+  template:
+    metadata:
+      labels:
+        app: clinica-frontend
+    spec:
+      containers:
+      - name: clinica-frontend
+        image: vinicpires/clinica_frontend:SHORT_SHA
+        ports:
+        - containerPort: 80
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: clinica-frontend-service
+  labels:
+    app: clinica-frontend
+spec:
+  selector:
+    app: clinica-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+--- 
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: clinica-frontend-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "cloudflare-cluster-issuer"
+spec:
+  rules:
+    - host: clinica-frontend.k8s.lab4ever.xyz  # Substitua pelo seu domínio
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: clinica-frontend-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - clinica-frontend.k8s.lab4ever.xyz
+      secretName: clinica-frontend-tls
