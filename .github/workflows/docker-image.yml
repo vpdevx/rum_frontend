@@ -1,0 +1,95 @@
+name: Deploy frontend
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Get commit short sha
+        id: vars
+        run: echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-8)" >> $GITHUB_ENV
+        
+      - name: Log SHORT_SHA
+        run: echo "SHORT_SHA is $SHORT_SHA"
+      
+      - name: Build and export
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          tags: clinica_frontend:${{ env.SHORT_SHA }}
+          outputs: type=docker,dest=/tmp/clinica_frontend.tar
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: clinica_frontend
+          path: /tmp/clinica_frontend.tar
+
+  push:
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: clinica_frontend
+          path: /tmp
+          
+      - name: Get commit short sha
+        id: vars
+        run: echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-8)" >> $GITHUB_ENV
+
+      - name: Deploy to Docker Hub
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+        run: |
+          docker load --input /tmp/clinica_frontend.tar
+          echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+          docker tag clinica_frontend:${{ env.SHORT_SHA }} ${{ secrets.DOCKER_HUB_USERNAME }}/clinica_frontend:${{ env.SHORT_SHA }}
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/clinica_frontend:${{ env.SHORT_SHA }}
+
+  deploy:
+
+    runs-on: ubuntu-latest
+    needs: ["build", "push"]
+
+    steps: 
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Get commit short sha
+        id: vars
+        run: echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-8)" >> $GITHUB_ENV
+
+      - name: Change yaml image attribute value.
+        run: |
+          SHORT_SHA="${{ env.SHORT_SHA }}"
+
+          echo "Short SHA: $SHORT_SHA"
+
+          sed -i "s|clinica_frontend:.*|clinica_frontend:${SHORT_SHA}|g" manifests/clinica_frontend.yaml
+
+      - name: Deploy to Kubernetes
+        env:
+          KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
+        run: |
+          mkdir $HOME/.kube   
+          echo "$KUBECONFIG_DATA" | base64 --decode > $HOME/.kube/config
+          kubectl apply -f manifests/clinica_frontend.yaml
