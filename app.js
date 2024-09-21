@@ -1,4 +1,4 @@
-const apiUrl = 'https://api-clinica.k8s.lab4ever.xyz'; // Replace with your API URL
+const apiUrl = 'https://api-cl.k8s.lab4ever.xyz'; // Replace with your API URL
 
 document.getElementById('viewConsultations').addEventListener('click', loadConsultations);
 document.getElementById('viewDoctors').addEventListener('click', loadDoctors);
