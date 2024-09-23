@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: clinica-frontend
+  name: rum-teste-frontend
   labels:
-    app: clinica-frontend
+    app: rum-teste-frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: clinica-frontend
+      app: rum-teste-frontend
   template:
     metadata:
       labels:
-        app: clinica-frontend
+        app: rum-teste-frontend
     spec:
       containers:
-      - name: clinica-frontend
-        image: vinicpires/clinica_frontend:SHORT_SHA
+      - name: rum-teste-frontend
+        image: vinicpires/rum-teste-frontend:SHORT_SHA
         ports:
         - containerPort: 80
 --- 
@@ -24,12 +24,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: clinica-frontend-service
+  name: rum-teste-frontend-service
   labels:
-    app: clinica-frontend
+    app: rum-teste-frontend
 spec:
   selector:
-    app: clinica-frontend
+    app: rum-teste-frontend
   ports:
     - protocol: TCP
       port: 80
@@ -40,23 +40,23 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: clinica-frontend-ingress
+  name: rum-teste-frontend-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     cert-manager.io/cluster-issuer: "cloudflare-cluster-issuer"
 spec:
   rules:
-    - host: clinica-frontend.k8s.lab4ever.xyz  # Substitua pelo seu domínio
+    - host: rum-frontend.k8s.lab4ever.xyz 
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: clinica-frontend-service
+                name: rum-teste-frontend-service
                 port:
                   number: 80
   tls:
     - hosts:
-        - clinica-frontend.k8s.lab4ever.xyz
-      secretName: clinica-frontend-tls
+        - rum-frontend.k8s.lab4ever.xyz
+      secretName: rum-teste-frontend-tls

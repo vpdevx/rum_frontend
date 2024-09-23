@@ -27,14 +27,14 @@ jobs:
         with:
           context: .
           file: Dockerfile
-          tags: clinica_frontend:${{ env.SHORT_SHA }}
-          outputs: type=docker,dest=/tmp/clinica_frontend.tar
+          tags: rum-teste-frontend:${{ env.SHORT_SHA }}
+          outputs: type=docker,dest=/tmp/rum-teste-frontend.tar
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: clinica_frontend
-          path: /tmp/clinica_frontend.tar
+          name: rum-teste-frontend
+          path: /tmp/rum-teste-frontend.tar
 
   push:
     runs-on: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: clinica_frontend
+          name: rum-teste-frontend
           path: /tmp
           
       - name: Get commit short sha
@@ -59,10 +59,10 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
         run: |
-          docker load --input /tmp/clinica_frontend.tar
+          docker load --input /tmp/rum-teste-frontend.tar
           echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-          docker tag clinica_frontend:${{ env.SHORT_SHA }} ${{ secrets.DOCKER_HUB_USERNAME }}/clinica_frontend:${{ env.SHORT_SHA }}
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/clinica_frontend:${{ env.SHORT_SHA }}
+          docker tag rum-teste-frontend:${{ env.SHORT_SHA }} ${{ secrets.DOCKER_HUB_USERNAME }}/rum-teste-frontend:${{ env.SHORT_SHA }}
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/rum-teste-frontend:${{ env.SHORT_SHA }}
 
   deploy:
 
@@ -84,7 +84,7 @@ jobs:
 
           echo "Short SHA: $SHORT_SHA"
 
-          sed -i "s|clinica_frontend:.*|clinica_frontend:${SHORT_SHA}|g" manifests/clinica_frontend.yaml
+          sed -i "s|rum-teste-frontend:.*|rum-teste-frontend:${SHORT_SHA}|g" manifests/rum-teste-frontend.yaml
 
       - name: Deploy to Kubernetes
         env:
@@ -92,4 +92,4 @@ jobs:
         run: |
           mkdir $HOME/.kube   
           echo "$KUBECONFIG_DATA" | base64 --decode > $HOME/.kube/config
-          kubectl apply -f manifests/clinica_frontend.yaml
+          kubectl apply -f manifests/rum-teste-frontend.yaml
