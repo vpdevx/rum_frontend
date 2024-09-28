@@ -64,9 +64,6 @@ const ProductsPage = () => {
             <Button variant="outlined" onClick={() => handleEditClick(product)} style={{ marginTop: '10px' }}>
               Edit
             </Button>
-                        <Button variant="outlined" onClick={() => handleEditClick(product)} style={{ marginTop: '10px' }}>
-              Edit
-            </Button>
             <Button variant="outlined" onClick={() => handleDeleteClick(product)} style={{ color: 'red', borderColor: 'red'}}>
                   Delete
             </Button>
