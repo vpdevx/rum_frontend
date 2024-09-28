@@ -40,7 +40,7 @@ const ProductsPage = () => {
   
   const handleDeleteClick = async (product) => {
     await deleteProduct(product.id);
-    setCustomers(products.filter((prod) => prod.id !== product.id));
+    setProducts(products.filter((prod) => prod.id !== product.id));
   }
 
   return (
