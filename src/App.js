@@ -15,7 +15,7 @@ datadogRum.init({
   forwardErrorsToLogs: true,
   forwardConsoleLogs: "all",
   // Specify a version number to identify the deployed version of your application in Datadog
-  // version: '1.0.0',
+  version: '1.0.0',
   beforeSend: (event, context) => {
     // collect a RUM resource's response headers
     if (event.type === 'resource' && event.resource.type === 'fetch') {

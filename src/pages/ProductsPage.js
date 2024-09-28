@@ -1,6 +1,6 @@
 // src/pages/ProductsPage.js
 import React, { useState, useEffect } from 'react';
-import { fetchProducts, addProduct, editProduct } from '../api';
+import { fetchProducts, addProduct, editProduct, deleteProduct } from '../api';
 import PopupForm from '../components/ProductForm';
 import { Button } from '@mui/material';
 
@@ -37,6 +37,12 @@ const ProductsPage = () => {
     setPopupOpen(true);
   };
 
+  
+  const handleDeleteClick = async (product) => {
+    await deleteProduct(product.id);
+    setCustomers(products.filter((prod) => prod.id !== product.id));
+  }
+
   return (
     <div>
       <h2 style={{ fontFamily: 'Poppins, sans-serif', color: '#333' }}>Products</h2>
@@ -44,20 +50,30 @@ const ProductsPage = () => {
         Add New Product
       </Button>
 
-      <ul style={{ listStyleType: 'none', padding: 0 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', fontFamily: 'Poppins, sans-serif' }}>
         {products.map((product, index) => (
-          <li key={index} style={{ marginBottom: '16px', borderBottom: '1px solid #ccc', paddingBottom: '8px', fontFamily: 'Poppins, sans-serif' }}>
+          <div key={index} style={{
+            border: '1px solid #ccc', borderRadius: '8px', padding: '16px', width: '250px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', backgroundColor: 'white'
+          }}>
+            <img src={product.image} alt={product.name} style={{ width: '100%', borderRadius: '4px' }} />
             <h3>{product.name}</h3>
             <p><strong>Price:</strong> ${product.price}</p>
             <p><strong>Description:</strong> {product.description}</p>
             <p><strong>Quantity:</strong> {product.quantity}</p>
-            <img src={product.image} alt={product.name} style={{ width: '100px' }} />
             <Button variant="outlined" onClick={() => handleEditClick(product)} style={{ marginTop: '10px' }}>
               Edit
             </Button>
-          </li>
+                        <Button variant="outlined" onClick={() => handleEditClick(product)} style={{ marginTop: '10px' }}>
+              Edit
+            </Button>
+            <Button variant="outlined" onClick={() => handleDeleteClick(product)} style={{ color: 'red', borderColor: 'red'}}>
+                  Delete
+            </Button>
+          </div>
         ))}
-      </ul>
+      </div>
+
 
       <PopupForm
         open={popupOpen}

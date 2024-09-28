@@ -1,6 +1,6 @@
 // src/pages/CustomersPage.js
 import React, { useState, useEffect } from 'react';
-import { fetchCustomers, addCustomer, editCustomer } from '../api';
+import { fetchCustomers, addCustomer, editCustomer, deleteCustomer } from '../api';
 import PopupForm from '../components/CustomerForm';
 import { Button } from '@mui/material';
 
@@ -37,6 +37,11 @@ const CustomersPage = () => {
     setPopupOpen(true);
   };
 
+  const handleDeleteClick = async (customer) => {
+    await deleteCustomer(customer.id);
+    setCustomers(customers.filter((cust) => cust.id !== customer.id));
+  }
+
   return (
     <div>
       <h2 style={{ fontFamily: 'Poppins, sans-serif', color: '#333' }}>Customers</h2>
@@ -44,22 +49,30 @@ const CustomersPage = () => {
         Add New Customer
       </Button>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
-        {customers.map((customer, index) => (
-          <div key={index} style={{
-            border: '1px solid #ccc', borderRadius: '8px', padding: '16px', width: '250px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', backgroundColor: 'white', fontFamily: 'Poppins, sans-serif'
-          }}>
-            <h3>{customer.name}</h3>
-            <p><strong>CPF:</strong> {customer.cpf}</p>
-            <p><strong>Phone:</strong> {customer.phone}</p>
-            <p><strong>Email:</strong> {customer.email}</p>
-            <Button variant="outlined" onClick={() => handleEditClick(customer)} style={{ marginTop: '10px' }}>
-              Edit
-            </Button>
-          </div>
-        ))}
+      <div style={{ fontFamily: 'Poppins, sans-serif' }}>
+        <ul style={{ listStyleType: 'none', padding: 0 }}>
+          {customers.map((customer, index) => (
+            <li key={index} style={{
+              border: '1px solid #ccc', borderRadius: '8px', padding: '16px', margin: '8px 0',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', backgroundColor: 'white'
+            }}>
+              <h3>{customer.name}</h3>
+              <p><strong>CPF:</strong> {customer.cpf}</p>
+              <p><strong>Phone:</strong> {customer.phone}</p>
+              <p><strong>Email:</strong> {customer.email}</p>
+              <div style={{ marginTop: '10px' }}>
+                <Button variant="outlined" onClick={() => handleEditClick(customer)} style={{ marginRight: '8px' }}>
+                  Edit
+                </Button>
+                <Button variant="outlined" onClick={() => handleDeleteClick(customer)} style={{ color: 'red', borderColor: 'red'}}>
+                  Delete
+                </Button>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
+
 
       <PopupForm
         open={popupOpen}

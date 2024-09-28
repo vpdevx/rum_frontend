@@ -60,7 +60,6 @@ export const fetchCustomers = async () => {
         },
         body: JSON.stringify(customer)
       });
-      console.log(customer)
       return await response.json();
     } catch (error) {
       console.error(error);
@@ -77,6 +76,38 @@ export const fetchCustomers = async () => {
         body: JSON.stringify(product)
       });
       return await response.json();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  export const deleteCustomer = async (id) => {
+    try {
+      const response = await fetch(`https://api-rum-teste.k8s.lab4ever.xyz/customer/delete/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      return await response;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  export const deleteProduct = async (id) => {
+    try {
+      const response = await fetch(`https://api-rum-teste.k8s.lab4ever.xyz/product/delete/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      return await response;
     } catch (error) {
       console.error(error);
     }
