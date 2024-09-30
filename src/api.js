@@ -53,7 +53,7 @@ export const fetchCustomers = async () => {
   
   export const editCustomer = async (customer) => {
     try {
-      const response = await fetch(`https://api-rum-teste.k8s.lab4ever.xyz/customer/edit`, {
+      const response = await fetch(`https://api-rum-teste.k8s.lab4ever.xyz/customer/edt`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
