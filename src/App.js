@@ -3,6 +3,7 @@ import CustomersPage from './pages/CustomersPage';
 import ProductsPage from './pages/ProductsPage';
 import AppBarComponent from './components/AppBarComponent';
 import { datadogRum } from '@datadog/browser-rum';
+import { datadogLogs } from '@datadog/browser-logs';
 
 datadogRum.init({
   applicationId: '5b8e2f7e-ee27-4c31-a627-df0d3634f911',
