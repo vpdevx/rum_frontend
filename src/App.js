@@ -3,7 +3,7 @@ import CustomersPage from './pages/CustomersPage';
 import ProductsPage from './pages/ProductsPage';
 import AppBarComponent from './components/AppBarComponent';
 import { datadogRum } from '@datadog/browser-rum';
-import { BrowserRouter as Router, Route, Switch, useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, useNavigate } from 'react-router-dom';
 import { datadogLogs } from '@datadog/browser-logs';
 
 datadogRum.init({
@@ -35,7 +35,7 @@ datadogRum.init({
 });
 
 const App = () => {
-  const history = useHistory();
+  const history = useNavigate();
 
   const handleChangePage = (page) => {
     history.push(`/${page}`);
