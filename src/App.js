@@ -45,13 +45,11 @@ const App = () => {
     <div>
       <AppBarComponent onClickMenuButton={handleChangePage} pages={['customers', 'products']} />
       <Router>
-      <Layout>
         <Routes>
         <Route path="/customers" element={CustomersPage} />
         <Route path="/products" element={ProductsPage} />
         <Route exact path="/" element={CustomersPage} />
         </Routes>
-      </Layout>
     </Router>
     </div>
   );
