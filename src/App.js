@@ -3,7 +3,7 @@ import CustomersPage from './pages/CustomersPage';
 import ProductsPage from './pages/ProductsPage';
 import AppBarComponent from './components/AppBarComponent';
 import { datadogRum } from '@datadog/browser-rum';
-import { BrowserRouter as Router, Route, Switch, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import { datadogLogs } from '@datadog/browser-logs';
 
 datadogRum.init({
@@ -44,11 +44,15 @@ const App = () => {
   return (
     <div>
       <AppBarComponent onClickMenuButton={handleChangePage} pages={['customers', 'products']} />
-      <Switch>
-        <Route path="/customers" component={CustomersPage} />
-        <Route path="/products" component={ProductsPage} />
-        <Route exact path="/" component={CustomersPage} />
-      </Switch>
+      <Router>
+      <Layout>
+        <Routes>
+        <Route path="/customers" element={CustomersPage} />
+        <Route path="/products" element={ProductsPage} />
+        <Route exact path="/" element={CustomersPage} />
+        </Routes>
+      </Layout>
+    </Router>
     </div>
   );
 };
