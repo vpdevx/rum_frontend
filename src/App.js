@@ -35,22 +35,20 @@ datadogRum.init({
 });
 
 const App = () => {
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const handleChangePage = (page) => {
-    history.push(`/${page}`);
+    navigate(`/${page}`);
   };
 
   return (
     <div>
       <AppBarComponent onClickMenuButton={handleChangePage} pages={['customers', 'products']} />
-      <Router>
-        <Routes>
-        <Route path="/customers" element={CustomersPage} />
-        <Route path="/products" element={ProductsPage} />
-        <Route exact path="/" element={CustomersPage} />
-        </Routes>
-    </Router>
+      <Routes>
+        <Route path="/customers" element={<CustomersPage />} />
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/" element={<CustomersPage />} />
+      </Routes>
     </div>
   );
 };
@@ -62,4 +60,3 @@ const AppWithRouter = () => (
 );
 
 export default AppWithRouter;
-
