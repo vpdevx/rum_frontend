@@ -3,6 +3,7 @@ import CustomersPage from './pages/CustomersPage';
 import ProductsPage from './pages/ProductsPage';
 import AppBarComponent from './components/AppBarComponent';
 import { datadogRum } from '@datadog/browser-rum';
+import { BrowserRouter as Router, Route, Switch, useHistory } from 'react-router-dom';
 import { datadogLogs } from '@datadog/browser-logs';
 
 datadogRum.init({
@@ -34,20 +35,29 @@ datadogRum.init({
 });
 
 const App = () => {
-  const [activePage, setActivePage] = useState('customers');
+  const history = useHistory();
 
   const handleChangePage = (page) => {
-    setActivePage(page);
+    history.push(`/${page}`);
   };
 
   return (
     <div>
       <AppBarComponent onClickMenuButton={handleChangePage} pages={['customers', 'products']} />
-      {activePage === 'customers' && <CustomersPage />}
-      {activePage === 'products' && <ProductsPage />}
+      <Switch>
+        <Route path="/customers" component={CustomersPage} />
+        <Route path="/products" component={ProductsPage} />
+        <Route exact path="/" component={CustomersPage} />
+      </Switch>
     </div>
   );
 };
 
-export default App;
+const AppWithRouter = () => (
+  <Router>
+    <App />
+  </Router>
+);
+
+export default AppWithRouter;
 
