@@ -39,7 +39,11 @@ const App = () => {
   const navigate = useNavigate();
 
   const handleChangePage = (page) => {
-    navigate(`/${page}`);
+    if (page === 'home') {
+      navigate(`/`);
+    } else {
+      navigate(`/${page}`);
+    }
   };
 
   return (
