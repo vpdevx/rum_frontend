@@ -44,7 +44,7 @@ const App = () => {
 
   return (
     <div>
-      <AppBarComponent onClickMenuButton={handleChangePage} pages={['customers', 'products']} />
+      <AppBarComponent onClickMenuButton={handleChangePage} pages={['home','customers', 'products']} />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/customers" element={<CustomersPage />} />
