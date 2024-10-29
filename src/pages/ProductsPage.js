@@ -61,7 +61,7 @@ const ProductsPage = () => {
             <p><strong>Price:</strong> ${product.price}</p>
             <p><strong>Description:</strong> {product.description}</p>
             <p><strong>Quantity:</strong> {product.quantity}</p>
-            <Button variant="outlined" onClick={() => handleEditClick(product)} style={{ marginTop: '10px' }}>
+            <Button variant="outlined" onClick={() => handleEditClick(product)} style={{ marginRight: '8px' }}>
               Edit
             </Button>
             <Button variant="outlined" onClick={() => handleDeleteClick(product)} style={{ color: 'red', borderColor: 'red'}}>

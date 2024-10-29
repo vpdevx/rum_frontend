@@ -18,7 +18,7 @@ const PopupForm = ({ open, onClose, title, formData, setFormData, onSubmit }) =>
           label="Price"
           fullWidth
           margin="dense"
-          type="number"
+          type="text"
           value={formData.price}
           onChange={(e) => setFormData({ ...formData, price: e.target.value })}
         />
@@ -40,7 +40,7 @@ const PopupForm = ({ open, onClose, title, formData, setFormData, onSubmit }) =>
           label="Quantity"
           fullWidth
           margin="dense"
-          type="number"
+          type="text"
           value={formData.quantity}
           onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
         />
