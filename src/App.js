@@ -5,6 +5,7 @@ import AppBarComponent from './components/AppBarComponent';
 import { datadogRum } from '@datadog/browser-rum';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import { datadogLogs } from '@datadog/browser-logs';
+import HomePage from './pages/HomePage';
 
 datadogRum.init({
   applicationId: '5b8e2f7e-ee27-4c31-a627-df0d3634f911',
@@ -45,9 +46,9 @@ const App = () => {
     <div>
       <AppBarComponent onClickMenuButton={handleChangePage} pages={['customers', 'products']} />
       <Routes>
+        <Route path="/" element={<HomePage />} />
         <Route path="/customers" element={<CustomersPage />} />
         <Route path="/products" element={<ProductsPage />} />
-        <Route path="/" element={<CustomersPage />} />
       </Routes>
     </div>
   );
