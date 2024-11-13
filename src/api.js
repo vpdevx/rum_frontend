@@ -38,7 +38,7 @@ export const fetchCustomers = async () => {
   
   export const addProduct = async (product) => {
     try {
-      const response = await fetch('https://api-rum-teste.k8s.lab4ever.xyz/product/add', {
+      const response = await fetch('https://api-rum-teste.k8slab4ever.xyz/product/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
