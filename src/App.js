@@ -28,7 +28,7 @@ datadogRum.init({
     return true
   },
   sessionSampleRate: 100,
-  sessionReplaySampleRate: 80,
+  sessionReplaySampleRate: 20,
   trackUserInteractions: true,
   trackResources: true,
   trackLongTasks: true,
