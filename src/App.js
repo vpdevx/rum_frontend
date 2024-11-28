@@ -8,8 +8,8 @@ import { datadogLogs } from '@datadog/browser-logs';
 import HomePage from './pages/HomePage';
 
 datadogRum.init({
-  applicationId: '5b8e2f7e-ee27-4c31-a627-df0d3634f911',
-  clientToken: 'pub9970e541911a397e72d8b9dc4ce3c097',
+  applicationId: '7d90867a-51ea-4f3b-9f6f-8eb905571fc8',
+  clientToken: 'pub22692abbcf2d8a525f9bc19fd371a906',
   site: 'datadoghq.com',
   allowedTracingUrls: [/https:\/\/.*\.k8s\.lab4ever\.xyz.*/],
   service: 'rum-teste-frontend',
