@@ -42,7 +42,7 @@ kind: Ingress
 metadata:
   name: rum-teste-frontend-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+   # nginx.ingress.kubernetes.io/rewrite-target: /
     cert-manager.io/cluster-issuer: "cloudflare-cluster-issuer"
 spec:
   rules:
