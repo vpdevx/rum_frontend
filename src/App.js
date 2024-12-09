@@ -12,7 +12,7 @@ datadogRum.init({
   clientToken: 'pub22692abbcf2d8a525f9bc19fd371a906',
   site: 'datadoghq.com',
   allowedTracingUrls: [
-      { match: /https:\/\/.*\.k8s\.lab4ever\.xyz.*/, propagatorTypes: ["tracecontext"]}
+      { match: /https:\/\/.*\.lab4ever\.xyz.*/, propagatorTypes: ["tracecontext"]}
   ],
   service: 'rum-teste-frontend',
   env: 'dev',
