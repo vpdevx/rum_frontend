@@ -41,12 +41,12 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: rum-teste-frontend-ingress
-  annotations:
+ # annotations:
    # nginx.ingress.kubernetes.io/rewrite-target: /
-    cert-manager.io/cluster-issuer: "cloudflare-cluster-issuer"
+   # cert-manager.io/cluster-issuer: "cloudflare-cluster-issuer"
 spec:
   rules:
-    - host: rum-frontend.k8s.lab4ever.xyz 
+    - host: rum-frontend.lab4ever.xyz 
       http:
         paths:
           - path: /
@@ -58,5 +58,5 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - rum-frontend.k8s.lab4ever.xyz
-      secretName: rum-teste-frontend-tls
+        - rum-frontend.lab4ever.xyz
+      secretName: cloudflare-origin-cert
