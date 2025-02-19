@@ -47,7 +47,7 @@ datadogRum.init({
         
         lastProcessedViewUrl = currentViewUrl;
       }
-      
+      console.log(event)
     } else if (event.type === 'action') {
       // Armazena ações com timestamp
       actionQueue.push({
