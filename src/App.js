@@ -26,19 +26,18 @@ datadogRum.init({
   version: '1.0.0',
   beforeSend: (event, context) => {
     if (event.type === 'view') {
-      // 1. Anexa a última ação à NOVA view
-      event.context.last_action = last_action;
-      
-      // 2. DEBUG: Mostra a view e ação associada
-      console.log(`Nova View: ${event.view.url} | Ação Associada: ${last_action || 'Nenhuma'}`);
-      
-      // 3. Reseta a ação APÓS vincular à view
-      last_action = null;
+      // Só vincula a ação se for uma nova view
+      if (!pendingNavigation) {
+        event.context.last_action = last_action;
+        console.log(`🔄 View: ${event.view.url} | Ação: ${last_action || 'Nenhuma'}`);
+        last_action = null;
+      }
+      pendingNavigation = false;
       
     } else if (event.type === 'action') {
-      // 4. Armazena a ação para a PRÓXIMA view
       last_action = event.action?.target?.name || 'ação-desconhecida';
-      console.log(`Ação Registrada: ${last_action} (Será vinculada à próxima view)`);
+      pendingNavigation = true; // Sinaliza que uma navegação está por vir
+      console.log(`🎯 Ação: ${last_action} | Próxima view receberá esta ação`);
     }
     return true;
   },
