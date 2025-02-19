@@ -36,7 +36,7 @@ datadogRum.init({
         const relevantAction = actionQueue.find(a => a.timestamp < event.date);
         
         if (relevantAction) {
-          event.context = custom_last_action: relevantAction.name,
+          event.context.custom_last_action = relevantAction.name
 
           
           // Remove ações processadas (mais antigas que esta view)
