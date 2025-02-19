@@ -29,37 +29,50 @@ datadogRum.init({
   forwardConsoleLogs: "all",
   // Specify a version number to identify the deployed version of your application in Datadog
   version: '1.0.0',
-  beforeSend: (event) => {
-    if (event.type === 'view') {
-      // Usa o ID único da view ao invés da URL
-      if (event.view.id !== lastViewId) {
-        const relevantAction = actionQueue.find(a => a.timestamp < event.date);
+  // beforeSend: (event) => {
+  //   if (event.type === 'view') {
+  //     // Usa o ID único da view ao invés da URL
+  //     if (event.view.id !== lastViewId) {
+  //       const relevantAction = actionQueue.find(a => a.timestamp < event.date);
         
-        if (relevantAction) {
-          event.context.custom_last_action = relevantAction.name
+  //       if (relevantAction) {
+  //         event.context.custom_last_action = relevantAction.name
 
           
-          // Remove ações processadas (mais antigas que esta view)
-          actionQueue = actionQueue.filter(a => a.timestamp >= event.date);
-        }
+  //         // Remove ações processadas (mais antigas que esta view)
+  //         actionQueue = actionQueue.filter(a => a.timestamp >= event.date);
+  //       }
 
-        lastViewId = event.view.id;
-        console.log(`🌐 View ID: ${event.view.id} | Ação: ${relevantAction?.name || 'Nenhuma'}`);
-      }
+  //       lastViewId = event.view.id;
+  //       console.log(`🌐 View ID: ${event.view.id} | Ação: ${relevantAction?.name || 'Nenhuma'}`);
+  //     }
       
-      // Força a preservação do contexto
-      event._dd = event._dd || {};
-      event._dd.manual_override = true;
+  //     // Força a preservação do contexto
+  //     event._dd = event._dd || {};
+  //     event._dd.manual_override = true;
 
-    } else if (event.type === 'action') {
-      actionQueue.push({
-        name: event.action?.target?.name || 'unknown-action',
-        timestamp: event.date
-      });
-      console.log(`🎯 Ação Registrada: ${event.action?.target?.name} @ ${event.date}`);
-    }
+  //   } else if (event.type === 'action') {
+  //     actionQueue.push({
+  //       name: event.action?.target?.name || 'unknown-action',
+  //       timestamp: event.date
+  //     });
+  //     console.log(`🎯 Ação Registrada: ${event.action?.target?.name} @ ${event.date}`);
+  //   }
     
-    return true;
+  //   return true;
+  // },
+  beforeSend: (event, context) => {
+  
+    
+  if (event.type === 'view') {
+  event.context.last_action = last_action;
+  last_action = null;
+  } else if (event.type === 'action') {
+  
+  last_action = event.action.target.name
+  console.log(last_action);
+  }
+  return true
   },
     sessionSampleRate: 100,
     sessionReplaySampleRate: 20,
