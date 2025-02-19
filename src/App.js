@@ -31,8 +31,9 @@ datadogRum.init({
   event.context.last_action = last_action;
   last_action = null;
   } else if (event.type === 'action') {
-  last_action = event.action.name
-  console.log(last_action);
+  console.log(event)
+  console.log(context)
+  last_action = event.action.target.name
   }
   return true
   },
