@@ -39,6 +39,7 @@ datadogRum.init({
         if (nextAction && nextAction.timestamp < event.date) {
           event.context.last_action = nextAction.name;
           console.log(`✅ View: ${currentViewUrl} | Ação Vinculada: ${nextAction.name}`);
+          console.log(event)
         } else {
           console.log(`🔄 View: ${currentViewUrl} | Sem ações pendentes`);
         }
