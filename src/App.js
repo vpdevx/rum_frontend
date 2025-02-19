@@ -13,13 +13,15 @@ let lastProcessedViewUrl = null;
 
 
 datadogRum.init({
-  applicationId: '7d90867a-51ea-4f3b-9f6f-8eb905571fc8',
-  clientToken: 'pub22692abbcf2d8a525f9bc19fd371a906',
-  site: 'datadoghq.com',
+    applicationId: 'a2a8318e-717e-45fb-a712-3f6f92a576dc',
+    clientToken: 'pub1e46cd88bbe3bc20165ec60dd9ebf208',
+    // `site` refers to the Datadog site parameter of your organization
+    // see https://docs.datadoghq.com/getting_started/site/
+    site: 'us5.datadoghq.com',
   allowedTracingUrls: [
       { match: /https:\/\/.*\.lab4ever\.xyz.*/, propagatorTypes: ["tracecontext"]}
   ],
-  service: 'rum-teste-frontend',
+  service: 'rum-teste',
   env: 'dev',
   
   traceSampleRate: 100,
