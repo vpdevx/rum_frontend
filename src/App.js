@@ -29,7 +29,7 @@ datadogRum.init({
   forwardConsoleLogs: "all",
   // Specify a version number to identify the deployed version of your application in Datadog
   version: '1.0.0',
-  beforeSend: (event) => {
+  beforeSend: (event, context) => {
     if (event.type === 'view') {
       const currentViewUrl = event.view.url;
       
