@@ -31,10 +31,7 @@ datadogRum.init({
       pendingAction = null; // Limpa após usar
     } else if (event.type === 'action') {
       // Armazena a ação para a próxima view
-      pendingAction = {
-        name: event.action.name,
-        timestamp: Date.now()
-      };
+      pendingAction = event.action.target.name
     }
     return true;
   },
