@@ -8,7 +8,7 @@ import { datadogLogs } from '@datadog/browser-logs';
 import HomePage from './pages/HomePage';
 
 let actionQueue = [];
-let lastProcessedViewUrl = null;
+let lastViewId = null;
 
 
 
@@ -29,32 +29,34 @@ datadogRum.init({
   forwardConsoleLogs: "all",
   // Specify a version number to identify the deployed version of your application in Datadog
   version: '1.0.0',
-  beforeSend: (event, context) => {
+  beforeSend: (event) => {
     if (event.type === 'view') {
-      const currentViewUrl = event.view.url;
-      
-      // Só processa se for uma nova view
-      if (currentViewUrl !== lastProcessedViewUrl) {
-        const nextAction = actionQueue.shift(); // Pega a ação mais antiga
+      // Usa o ID único da view ao invés da URL
+      if (event.view.id !== lastViewId) {
+        const relevantAction = actionQueue.find(a => a.timestamp < event.date);
         
-        // Vincula a ação apenas se houver correspondência temporal
-        if (nextAction && nextAction.timestamp < event.date) {
-          event.context.last_action = nextAction.name;
-          console.log(`✅ View: ${currentViewUrl} | Ação Vinculada: ${nextAction.name}`);
-        } else {
-          console.log(`🔄 View: ${currentViewUrl} | Sem ações pendentes`);
+        if (relevantAction) {
+          event.context = custom_last_action: relevantAction.name,
+
+          
+          // Remove ações processadas (mais antigas que esta view)
+          actionQueue = actionQueue.filter(a => a.timestamp >= event.date);
         }
-        
-        lastProcessedViewUrl = currentViewUrl;
+
+        lastViewId = event.view.id;
+        console.log(`🌐 View ID: ${event.view.id} | Ação: ${relevantAction?.name || 'Nenhuma'}`);
       }
-      console.log(event)
+      
+      // Força a preservação do contexto
+      event._dd = event._dd || {};
+      event._dd.manual_override = true;
+
     } else if (event.type === 'action') {
-      // Armazena ações com timestamp
       actionQueue.push({
         name: event.action?.target?.name || 'unknown-action',
-        timestamp: event.date // Usa o timestamp do evento RUM
+        timestamp: event.date
       });
-      console.log(`🎯 Ação Registrada: ${event.action?.target?.name}`);
+      console.log(`🎯 Ação Registrada: ${event.action?.target?.name} @ ${event.date}`);
     }
     
     return true;
