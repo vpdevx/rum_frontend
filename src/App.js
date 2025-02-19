@@ -29,7 +29,7 @@ datadogRum.init({
   forwardConsoleLogs: "all",
   // Specify a version number to identify the deployed version of your application in Datadog
   version: '1.0.0',
-  beforeSend: (event, context) => {
+  beforeSend: (event) => {
     if (event.type === 'view') {
       const currentViewUrl = event.view.url;
       
@@ -39,9 +39,8 @@ datadogRum.init({
         
         // Vincula a ação apenas se houver correspondência temporal
         if (nextAction && nextAction.timestamp < event.date) {
-          event.context.sourceAction = nextAction.name;
+          event.context.last_action = nextAction.name;
           console.log(`✅ View: ${currentViewUrl} | Ação Vinculada: ${nextAction.name}`);
-          console.log(event)
         } else {
           console.log(`🔄 View: ${currentViewUrl} | Sem ações pendentes`);
         }
