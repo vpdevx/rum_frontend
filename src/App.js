@@ -23,11 +23,14 @@ datadogRum.init({
   // Specify a version number to identify the deployed version of your application in Datadog
   version: '1.0.0',
   beforeSend: (event, context) => {
-    // collect a RUM resource's response headers
-    if (event.type === 'resource' && event.resource.type === 'fetch') {
-      event.context.responseHeaders = Object.fromEntries(context.response.headers)
-    }
-    return true
+  if (event.type === 'view') {
+  event.context.last_action = last_action;
+  } else if (event.type === 'action') {
+  
+  last_action = event.action.name
+  console.log(last_action);
+  }
+  return true
   },
   sessionSampleRate: 100,
   sessionReplaySampleRate: 20,
