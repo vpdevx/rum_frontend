@@ -24,7 +24,7 @@ datadogRum.init({
   forwardConsoleLogs: "all",
   // Specify a version number to identify the deployed version of your application in Datadog
   version: '1.0.0',
-  beforeSend: (event) => {
+  beforeSend: (event, context) => {
     if (event.type === 'view') {
       // Anexa a ação pendente à nova view
       event.context.triggering_action = pendingAction;
