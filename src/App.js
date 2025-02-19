@@ -8,7 +8,8 @@ import { datadogLogs } from '@datadog/browser-logs';
 import HomePage from './pages/HomePage';
 
 let actionQueue = [];
-let lastViewUrl = null;
+let lastProcessedViewUrl = null;
+
 
 
 datadogRum.init({
@@ -26,30 +27,32 @@ datadogRum.init({
   forwardConsoleLogs: "all",
   // Specify a version number to identify the deployed version of your application in Datadog
   version: '1.0.0',
-  beforeSend: (event, context) => {
+  beforeSend: (event) => {
     if (event.type === 'view') {
-      // 1. Encontra a ação correspondente usando URL de referência
-      const referrer = event.view.referrer;
-      const matchingAction = actionQueue.find(a => a.referrer === referrer);
+      const currentViewUrl = event.view.url;
       
-      // 2. Vincula a ação à view se for a primeira ocorrência deste URL
-      if (event.view.url !== lastViewUrl) {
-        event.context.last_action = matchingAction?.name || null;
-        console.log(`🌐 View: ${event.view.url} | Ação: ${matchingAction?.name || 'Nenhuma'}`);
+      // Só processa se for uma nova view
+      if (currentViewUrl !== lastProcessedViewUrl) {
+        const nextAction = actionQueue.shift(); // Pega a ação mais antiga
         
-        // 3. Limpa ações antigas
-        actionQueue = actionQueue.filter(a => a.timestamp > Date.now() - 5000);
-        lastViewUrl = event.view.url;
+        // Vincula a ação apenas se houver correspondência temporal
+        if (nextAction && nextAction.timestamp < event.date) {
+          event.context.last_action = nextAction.name;
+          console.log(`✅ View: ${currentViewUrl} | Ação Vinculada: ${nextAction.name}`);
+        } else {
+          console.log(`🔄 View: ${currentViewUrl} | Sem ações pendentes`);
+        }
+        
+        lastProcessedViewUrl = currentViewUrl;
       }
       
     } else if (event.type === 'action') {
-      // 4. Armazena ação com referência da view atual
+      // Armazena ações com timestamp
       actionQueue.push({
         name: event.action?.target?.name || 'unknown-action',
-        referrer: window.location.href,
-        timestamp: Date.now()
+        timestamp: event.date // Usa o timestamp do evento RUM
       });
-      console.log(`🔗 Ação: ${event.action?.target?.name} | Referrer: ${window.location.href}`);
+      console.log(`🎯 Ação Registrada: ${event.action?.target?.name}`);
     }
     
     return true;
