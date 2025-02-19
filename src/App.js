@@ -7,8 +7,8 @@ import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-route
 import { datadogLogs } from '@datadog/browser-logs';
 import HomePage from './pages/HomePage';
 
-let last_action = null
-let pendingNavigation = false;
+let actionQueue = [];
+let lastViewUrl = null;
 
 
 datadogRum.init({
@@ -28,19 +28,30 @@ datadogRum.init({
   version: '1.0.0',
   beforeSend: (event, context) => {
     if (event.type === 'view') {
-      // Só vincula a ação se for uma nova view
-      if (!pendingNavigation) {
-        event.context.last_action = last_action;
-        console.log(`🔄 View: ${event.view.url} | Ação: ${last_action || 'Nenhuma'}`);
-        last_action = null;
+      // 1. Encontra a ação correspondente usando URL de referência
+      const referrer = event.view.referrer;
+      const matchingAction = actionQueue.find(a => a.referrer === referrer);
+      
+      // 2. Vincula a ação à view se for a primeira ocorrência deste URL
+      if (event.view.url !== lastViewUrl) {
+        event.context.last_action = matchingAction?.name || null;
+        console.log(`🌐 View: ${event.view.url} | Ação: ${matchingAction?.name || 'Nenhuma'}`);
+        
+        // 3. Limpa ações antigas
+        actionQueue = actionQueue.filter(a => a.timestamp > Date.now() - 5000);
+        lastViewUrl = event.view.url;
       }
-      pendingNavigation = false;
       
     } else if (event.type === 'action') {
-      last_action = event.action?.target?.name || 'ação-desconhecida';
-      pendingNavigation = true; // Sinaliza que uma navegação está por vir
-      console.log(`🎯 Ação: ${last_action} | Próxima view receberá esta ação`);
+      // 4. Armazena ação com referência da view atual
+      actionQueue.push({
+        name: event.action?.target?.name || 'unknown-action',
+        referrer: window.location.href,
+        timestamp: Date.now()
+      });
+      console.log(`🔗 Ação: ${event.action?.target?.name} | Referrer: ${window.location.href}`);
     }
+    
     return true;
   },
     sessionSampleRate: 100,
