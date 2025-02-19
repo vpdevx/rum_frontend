@@ -9,7 +9,7 @@ import HomePage from './pages/HomePage';
 
 let actionQueue = [];
 let lastViewId = null;
-
+let last_action = null;
 
 
 datadogRum.init({
