@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-route
 import { datadogLogs } from '@datadog/browser-logs';
 import HomePage from './pages/HomePage';
 
-let last_action = null
+let pendingAction = null
 
 datadogRum.init({
   applicationId: '7d90867a-51ea-4f3b-9f6f-8eb905571fc8',
@@ -24,26 +24,20 @@ datadogRum.init({
   forwardConsoleLogs: "all",
   // Specify a version number to identify the deployed version of your application in Datadog
   version: '1.0.0',
-  beforeSend: (event, context) => {
-  
-    
-  if (event.type === 'view') {
-  console.log("Last action: " + last_action)
-  console.log(event)
-    
-  event.context.last_action = last_action;
-  } else if (event.type === 'action') {
-  last_action = event.action.target.name
-  }
-  return true
-  },
-  sessionSampleRate: 100,
-  sessionReplaySampleRate: 20,
-  trackUserInteractions: true,
-  trackResources: true,
-  trackLongTasks: true,
-  defaultPrivacyLevel: 'mask-user-input',
-});
+  beforeSend: (event) => {
+    if (event.type === 'view') {
+      // Anexa a ação pendente à nova view
+      event.context.triggering_action = pendingAction;
+      pendingAction = null; // Limpa após usar
+    } else if (event.type === 'action') {
+      // Armazena a ação para a próxima view
+      pendingAction = {
+        name: event.action.name,
+        timestamp: Date.now()
+      };
+    }
+    return true;
+  });
 
 const App = () => {
   const navigate = useNavigate();
