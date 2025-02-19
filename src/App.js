@@ -37,7 +37,7 @@ datadogRum.init({
         
         // Vincula a ação apenas se houver correspondência temporal
         if (nextAction && nextAction.timestamp < event.date) {
-          event.context.last_action = nextAction.name;
+          event.context.sourceAction = nextAction.name;
           console.log(`✅ View: ${currentViewUrl} | Ação Vinculada: ${nextAction.name}`);
           console.log(event)
         } else {
