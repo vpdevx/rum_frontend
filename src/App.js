@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-route
 import { datadogLogs } from '@datadog/browser-logs';
 import HomePage from './pages/HomePage';
 
-let pendingAction = null
+let last_action = null
 
 datadogRum.init({
   applicationId: '7d90867a-51ea-4f3b-9f6f-8eb905571fc8',
@@ -26,15 +26,28 @@ datadogRum.init({
   version: '1.0.0',
   beforeSend: (event, context) => {
     if (event.type === 'view') {
-      // Anexa a ação pendente à nova view
-      event.context.triggering_action = pendingAction;
-      pendingAction = null; // Limpa após usar
+      // 1. Anexa a última ação à NOVA view
+      event.context.last_action = last_action;
+      
+      // 2. DEBUG: Mostra a view e ação associada
+      console.log(`Nova View: ${event.view.url} | Ação Associada: ${last_action || 'Nenhuma'}`);
+      
+      // 3. Reseta a ação APÓS vincular à view
+      last_action = null;
+      
     } else if (event.type === 'action') {
-      // Armazena a ação para a próxima view
-      pendingAction = event.action.target.name
+      // 4. Armazena a ação para a PRÓXIMA view
+      last_action = event.action?.target?.name || 'ação-desconhecida';
+      console.log(`Ação Registrada: ${last_action} (Será vinculada à próxima view)`);
     }
     return true;
   },
+    sessionSampleRate: 100,
+    sessionReplaySampleRate: 20,
+    trackUserInteractions: true,
+    trackResources: true,
+    trackLongTasks: true,
+    defaultPrivacyLevel: 'mask-user-input',
 });
 
 const App = () => {
