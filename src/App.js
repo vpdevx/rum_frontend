@@ -28,7 +28,8 @@ datadogRum.init({
   
     
   if (event.type === 'view') {
-  console.log("Last action: " + last_action + "    Current view: " + event.view.name)
+  console.log("Last action: " + last_action)
+  console.log(event)
     
   event.context.last_action = last_action;
   } else if (event.type === 'action') {
