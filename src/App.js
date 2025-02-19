@@ -37,7 +37,8 @@ datadogRum.init({
       };
     }
     return true;
-  });
+  },
+});
 
 const App = () => {
   const navigate = useNavigate();
