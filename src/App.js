@@ -8,6 +8,8 @@ import { datadogLogs } from '@datadog/browser-logs';
 import HomePage from './pages/HomePage';
 
 let last_action = null
+let pendingNavigation = false;
+
 
 datadogRum.init({
   applicationId: '7d90867a-51ea-4f3b-9f6f-8eb905571fc8',
