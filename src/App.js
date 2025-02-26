@@ -62,8 +62,8 @@ datadogRum.init({
       beforeSend: (event, context) => {
       if (event.type === "view") {
         const nextAction = actionQueue[actionQueue.length - 1]; // Pega a última ação adicionada
-    
-        if (nextAction.name !== undefined && event.date > nextAction?.timestamp) {
+        console.log(nextAction)
+        if (nextAction && event.date > nextAction?.timestamp) {
           event.context.last_action = nextAction.name; // Vincula a ação
           console.log(event.view.url)
           console.log(event.context.last_action)
