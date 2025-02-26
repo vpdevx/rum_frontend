@@ -60,16 +60,23 @@ datadogRum.init({
   //   return true;
   // },
 	beforeSend: (event, context) => {
+	  console.log(`Event type: ${event.type}, Full event:`, event, `Current last_action: ${window.last_action}`);
+	
 	  if (event.type === 'action' && event.action?.target?.name) {
 	    // Store the last action when the button is clicked
 	    window.last_action = event.action.target.name;
+	    console.log(`Action detected - Set last_action to: ${window.last_action}`);
 	  } else if (event.type === 'view') {
-	    // Only attach last_action if it exists and hasn’t been used yet
+	    // Only attach last_action if it exists
 	    if (window.last_action) {
 	      event.context = event.context || {};
 	      event.context.last_action = window.last_action;
-	      // Optionally clear last_action after attaching it to avoid reuse
-	       window.last_action = null;
+	      console.log(`View detected - Attached last_action: ${window.last_action} to view context`);
+	      // Optionally clear last_action after attaching it
+	      // window.last_action = null;
+	      // console.log('Cleared last_action after attaching');
+	    } else {
+	      console.log('View detected - No last_action to attach');
 	    }
 	  }
 	  return true;
