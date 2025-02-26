@@ -59,14 +59,21 @@ datadogRum.init({
     
   //   return true;
   // },
-				beforeSend: (event, context) => {
-				if (event.type === 'view') {
-				event.context.last_action = window.last_action;
-				} else if (event.type === 'action' && event.action && event.action.target && event.action.target.name) {
-				window.last_action = event.action.target.name;
-				}
-				return true;
-				},
+	beforeSend: (event, context) => {
+	  if (event.type === 'action' && event.action?.target?.name) {
+	    // Store the last action when the button is clicked
+	    window.last_action = event.action.target.name;
+	  } else if (event.type === 'view') {
+	    // Only attach last_action if it exists and hasn’t been used yet
+	    if (window.last_action) {
+	      event.context = event.context || {};
+	      event.context.last_action = window.last_action;
+	      // Optionally clear last_action after attaching it to avoid reuse
+	       window.last_action = null;
+	    }
+	  }
+	  return true;
+	},
     sessionSampleRate: 100,
     sessionReplaySampleRate: 20,
     trackUserInteractions: true,
