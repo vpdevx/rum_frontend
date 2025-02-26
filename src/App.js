@@ -74,9 +74,6 @@ beforeSend: (event, context) => {
       event.context.last_action = window.last_action;
       console.log(`View detected - Attached last_action: ${window.last_action} (Action date: ${window.last_action_date} < View date: ${event.date})`);
       // Optionally clear after attaching
-      window.last_action = null;
-      window.last_action_date = null;
-      console.log('Cleared last_action and last_action_date after attaching');
     } else {
       console.log(`View detected - Skipped attaching last_action (Action date: ${window.last_action_date || 'none'} >= View date: ${event.date || 'none'})`);
     }
