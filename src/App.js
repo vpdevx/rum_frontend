@@ -59,27 +59,22 @@ datadogRum.init({
     
   //   return true;
   // },
-beforeSend: (event, context) => {
-  console.log(`Event type: ${event.type}, Date: ${event.date}, Current last_action: ${window.last_action}, Last action date: ${window.last_action_date || 'none'}`);
-
-  if (event.type === 'action' && event.action?.target?.name) {
-    // Store the last action and its timestamp
-    window.last_action = event.action.target.name;
-    window.last_action_date = event.date; // Store the action's timestamp
-    console.log(`Action detected - Set last_action to: ${window.last_action}, Timestamp: ${window.last_action_date}`);
-  } else if (event.type === 'view') {
-    // Attach last_action only if it exists and the view's date is after the action's date
-    if (window.last_action && window.last_action_date && event.date > window.last_action_date) {
-      event.context = event.context || {};
-      event.context.last_action = window.last_action;
-      console.log(`View detected - Attached last_action: ${window.last_action} (Action date: ${window.last_action_date} < View date: ${event.date})`);
-      // Optionally clear after attaching
-    } else {
-      console.log(`View detected - Skipped attaching last_action (Action date: ${window.last_action_date || 'none'} >= View date: ${event.date || 'none'})`);
-    }
-  }
-  return true;
-},
+    beforeSend: (event, context) => {
+    
+      if (event.type === 'action' && event.action.target && event.action.target.name) {
+        // Store the last action and its timestamp
+        window.last_action = event.action.target.name;
+        window.last_action_date = event.date; // Store the action's timestamp
+          
+      } else if (event.type === 'view') {
+        // Attach last_action only if it exists and the view's date is after the action's date
+        if (window.last_action && window.last_action_date && event.date > window.last_action_date) {
+          event.context.last_action = window.last_action;
+        }
+      }
+        
+      return true;
+    },
     sessionSampleRate: 100,
     sessionReplaySampleRate: 20,
     trackUserInteractions: true,
