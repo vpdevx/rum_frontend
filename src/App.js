@@ -59,17 +59,18 @@ datadogRum.init({
     
   //   return true;
   // },
-
           beforeSend: (event) => {
             if (event.type === "view") {
-              const nextAction = actionQueue.shift();
-              console.log("Next Action:", nextAction);
+              //const last_action = actionQueue.shift();
+              // get the most recent action
+              const last_action = actionQueue[actionQueue.length - 1];
+              console.log("Next Action:", last_action);
               // timestamp for the action and the view
-              console.log("Next Action:", nextAction?.timestamp);
+              console.log("Next Action:", last_action?.timestamp);
               console.log("View Timestamp:", event.date);
-              if (nextAction && nextAction.timestamp < event.date) {
-                event.context.last_action = nextAction.name;
-                console.log("Last Action:", nextAction.name);
+              if (event.date > last_action?.timestamp && last_action.name !== undefined) {
+                event.context.last_action = last_action.name;
+                console.log("Last Action:", last_action.name);
               }
             } else if (event.type === "action") {
               console.log("Action:", event.action?.target?.name);
