@@ -8,8 +8,6 @@ import { datadogLogs } from '@datadog/browser-logs';
 import HomePage from './pages/HomePage';
 
 let actionQueue = [];
-let lastViewId = null;
-let last_action = null;
 
 
 datadogRum.init({
@@ -61,19 +59,28 @@ datadogRum.init({
     
   //   return true;
   // },
-  beforeSend: (event, context) => {
-  
-    
-  if (event.type === 'view') {
-  event.context.last_action = last_action;
-  last_action = null;
-  } else if (event.type === 'action') {
-  
-  last_action = event.action.target.name
-  console.log(last_action);
-  }
-  return true
-  },
+
+          beforeSend: (event) => {
+            if (event.type === "view") {
+              const nextAction = actionQueue.shift();
+              console.log("Next Action:", nextAction);
+              // timestamp for the action and the view
+              console.log("Next Action:", nextAction?.timestamp);
+              console.log("View Timestamp:", event.date);
+              if (nextAction && nextAction.timestamp < event.date) {
+                event.context.last_action = nextAction.name;
+                console.log("Last Action:", nextAction.name);
+              }
+            } else if (event.type === "action") {
+              console.log("Action:", event.action?.target?.name);
+              actionQueue.push({
+                name: event.action?.target?.name,
+                timestamp: event.date,
+              });
+            }
+
+            return true;
+          },
     sessionSampleRate: 100,
     sessionReplaySampleRate: 20,
     trackUserInteractions: true,
