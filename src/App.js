@@ -59,14 +59,14 @@ datadogRum.init({
     
   //   return true;
   // },
-    beforeSend: (event) => {
+      beforeSend: (event, context) => {
       if (event.type === "view") {
         const nextAction = actionQueue[actionQueue.length - 1]; // Pega a última ação adicionada
     
-        if (nextAction && event.date > nextAction.timestamp) {
+        if (nextAction.name !== undefined && event.date > nextAction?.timestamp) {
           event.context.last_action = nextAction.name; // Vincula a ação
-    
-          // Mantém apenas a ação mais recente
+          console.log(event.view.url)
+          console.log(event.context.last_action)
           actionQueue = nextAction ? [nextAction] : [];
         }
       } else if (event.type === "action") {
