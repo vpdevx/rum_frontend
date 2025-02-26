@@ -59,25 +59,14 @@ datadogRum.init({
     
   //   return true;
   // },
-      beforeSend: (event, context) => {
-      if (event.type === "view") {
-        const nextAction = actionQueue[actionQueue.length - 1]; // Pega a última ação adicionada
-        console.log(nextAction)
-        if (nextAction && event.date > nextAction?.timestamp) {
-          event.context.last_action = nextAction.name; // Vincula a ação
-          console.log(event.view.url)
-          console.log(event.context.last_action)
-          actionQueue = nextAction ? [nextAction] : [];
-        }
-      } else if (event.type === "action") {
-        actionQueue.push({
-          name: event.action?.target?.name,
-          timestamp: event.date,
-        });
-      }
-    
-      return true;
-    },
+				beforeSend: (event, context) => {
+				if (event.type === 'view') {
+				event.context.last_action = window.last_action;
+				} else if (event.type === 'action' && event.action && event.action.target && event.action.target.name) {
+				window.last_action = event.action.target.name;
+				}
+				return true;
+				},
     sessionSampleRate: 100,
     sessionReplaySampleRate: 20,
     trackUserInteractions: true,
